@@ -30,7 +30,7 @@ In your model `initialize()`:
 $this->addBehavior('Xety/Cake3Upload.Upload', [
 		'fields' => [
 			'avatar' => [
-				'path' => 'upload/avatar/:id/:md5'
+				'path' => 'upload/avatar/:model/:id/:md5'
 			]
 		]
 	]
@@ -57,6 +57,7 @@ If specified in your Entity, add the suffixed field (e.g. `avatar_file`) to the 
 
 ### Identifiers
 * **:id** Id of the Entity (It can be the user Id if you are using this for the users table for example)
+* **:model** Table name of the Entity
 * **:md5** A random and unique identifier with 32 characters. i.e : *bbebb3c3c5e76a46c3dca92c9395ee65*
 * **:y** Based on the current year. i.e : *2014*
 * **:m** Based on the current month. i.e : *09*
@@ -70,7 +71,7 @@ If specified in your Entity, add the suffixed field (e.g. `avatar_file`) to the 
     $this->addBehavior('Upload', [
     		'fields' => [
     			'avatar' => [
-    				'path' => 'upload/avatar/:id/:md5'
+    				'path' => 'upload/avatar/:model/:id/:md5'
     			]
     		],
     		'suffix' => '_anotherName'
@@ -88,7 +89,7 @@ If specified in your Entity, add the suffixed field (e.g. `avatar_file`) to the 
     $this->addBehavior('Upload', [
     		'fields' => [
     			'avatar' => [
-    				'path' => 'upload/avatar/:id/:md5',
+    				'path' => 'upload/avatar/:model/:id/:md5',
                     'overwrite' => false
     			]
     		]
@@ -104,7 +105,7 @@ If specified in your Entity, add the suffixed field (e.g. `avatar_file`) to the 
     $this->addBehavior('Upload', [
     		'fields' => [
     			'avatar' => [
-    				'path' => 'upload/avatar/:id/:md5',
+    				'path' => 'upload/avatar/:model/:id/:md5',
                     'overwrite' => true,
                     'defaultFile' => 'default_avatar.png'
     			]
@@ -121,7 +122,7 @@ If specified in your Entity, add the suffixed field (e.g. `avatar_file`) to the 
     $this->addBehavior('Upload', [
     		'fields' => [
     			'avatar' => [
-    				'path' => 'upload/avatar/:id/:md5',
+    				'path' => 'upload/avatar/:model/:id/:md5',
     				'prefix' => '../'
     			]
     		]
@@ -142,7 +143,7 @@ If specified in your Entity, add the suffixed field (e.g. `avatar_file`) to the 
     $this->addBehavior('Upload', [
     		'fields' => [
     			'avatar' => [
-    				'path' => 'upload/avatar/:id/:md5',
+    				'path' => 'upload/avatar/:model/:id/:md5',
     				'prefix' => '../'
     			]
     		]
@@ -151,7 +152,7 @@ If specified in your Entity, add the suffixed field (e.g. `avatar_file`) to the 
 
     // In a view, with the Html Helper:
     <?= $this->Html->image($User->avatar) ?>
-    // Output : <img src="/img/../upload/avatar/1/bbebb3c3c5e76a46c3dca92c9395ee65.png" alt="">
+    // Output : <img src="/img/../upload/avatar/[tablename]/1/bbebb3c3c5e76a46c3dca92c9395ee65.png" alt="">
     ```
 
 ## Contribute
