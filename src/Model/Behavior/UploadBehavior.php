@@ -261,6 +261,7 @@ class UploadBehavior extends Behavior
 
         $identifiers = [
             ':id' => $entity->id,
+            ':model' => strtolower($entity->source()),
             ':md5' => md5(rand() . uniqid() . time()),
             ':y' => date('Y'),
             ':m' => date('m')
