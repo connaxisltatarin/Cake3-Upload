@@ -87,7 +87,7 @@ class UploadBehavior extends Behavior
             }
 
             $extension = (new File($file['name'], false))->ext();
-            $uploadPath = $this->_getUploadPath($entity, $fieldOption['path'], $extension);
+            $uploadPath = $this->_getUploadPath($entity, $fieldOption['path'], $extension, pathinfo($file['name']));
             if (!$uploadPath) {
                 throw new \ErrorException(__('Error to get the uploadPath.'));
             }
@@ -251,11 +251,13 @@ class UploadBehavior extends Behavior
      *
      * @return bool|string
      */
-    protected function _getUploadPath(Entity $entity, $path = false, $extension = false)
+    protected function _getUploadPath(Entity $entity, $path = false, $extension = false, $pathinfo = null)
     {
         if ($extension === false || $path === false) {
             return false;
         }
+		
+		$filename = $pathinfo ? $pathinfo['filename'] : null;
 
         $path = trim($path, DS);
 
@@ -264,7 +266,8 @@ class UploadBehavior extends Behavior
             ':model' => strtolower($entity->source()),
             ':md5' => md5(rand() . uniqid() . time()),
             ':y' => date('Y'),
-            ':m' => date('m')
+            ':m' => date('m'),
+            ':filename' => $filename
         ];
 
         return strtr($path, $identifiers) . '.' . strtolower($extension);
