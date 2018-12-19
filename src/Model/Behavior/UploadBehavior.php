@@ -56,7 +56,7 @@ class UploadBehavior extends Behavior
      *
      * @return void
      */
-    public function beforeSave(Event $event, Entity $entity)
+    public function afterSave(Event $event, Entity $entity)
     {
         $config = $this->_config;
 
@@ -99,13 +99,24 @@ class UploadBehavior extends Behavior
                 if (!$this->_prefix) {
                     $this->_prefix = '';
                 }
-
-                $entity->set($field, $this->_prefix . $uploadPath);
+				
+				$entity->set($field, $this->_prefix . $uploadPath);
+				$this->_table->updateAll([$field => $entity->get($field)], ['id' => $entity->id]);
             }
 
             $entity->unsetProperty($virtualField);
         }
     }
+	
+	public function afterDelete(Event $event, Entity $entity, $options)
+	{
+        $file = new File($this->_config['root'] . $entity->path, false);
+		
+        if ($file->exists()) {
+            $file->delete();
+			$file->Folder->delete();
+		}
+	}
 
     /**
      * Trigger upload errors.
@@ -269,7 +280,7 @@ class UploadBehavior extends Behavior
             ':m' => date('m'),
             ':filename' => $filename
         ];
-
+		
         return strtr($path, $identifiers) . '.' . strtolower($extension);
     }
 }
