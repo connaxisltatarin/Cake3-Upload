@@ -85,9 +85,9 @@ class UploadBehavior extends Behavior
             if (isset($fieldOption['prefix']) && (is_bool($fieldOption['prefix']) || is_string($fieldOption['prefix']))) {
                 $this->_prefix = $fieldOption['prefix'];
             }
-
+			
             $extension = (new File($file['name'], false))->ext();
-            $uploadPath = $this->_getUploadPath($entity, $fieldOption['path'], $extension, pathinfo($file['name']));
+			$uploadPath = $this->_getUploadPath($entity, $fieldOption['path'], $extension, pathinfo($file['name']));
             if (!$uploadPath) {
                 throw new \ErrorException(__('Error to get the uploadPath.'));
             }
@@ -225,18 +225,21 @@ class UploadBehavior extends Behavior
         if (isset($options['defaultFile']) && (is_bool($options['defaultFile']) || is_string($options['defaultFile']))) {
             $this->_defaultFile = $options['defaultFile'];
         }
-
+		
         if ($fileInfo['basename'] == $newFileInfo['basename'] ||
             $fileInfo['basename'] == pathinfo($this->_defaultFile)['basename']) {
             return true;
         }
 
         if ($this->_prefix) {
-            $entity->$field = str_replace($this->_prefix, "", $entity->$field);
+			$pos = strpos($entity->$field, $this->_prefix);
+			if($pos !== false){
+				$entity->$field = substr_replace($entity->$field, '', $pos, strlen($this->_prefix));
+			}			
         }
 
         $file = new File($this->_config['root'] . $entity->$field, false);
-
+		
         if ($file->exists()) {
             $file->delete();
             return true;
@@ -271,7 +274,7 @@ class UploadBehavior extends Behavior
 		$filename = $pathinfo ? $pathinfo['filename'] : null;
 
         $path = trim($path, DS);
-
+		
         $identifiers = [
             ':id' => $entity->id,
             ':model' => strtolower($entity->source()),
